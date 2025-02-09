@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+        }
+        .header {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .invoice-info {
+            margin-top: 20px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+        }
+        .invoice-info p {
+            margin: 5px 0;
+        }
+        .invoice-body {
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .total {
+            margin-top: 20px;
+            text-align: right;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">Cervecería Artesanal S.A.</div>
+    <div class="invoice-info">
+        <p><strong>Invoice No:</strong> #123456</p>
+        <p><strong>Customer Name:</strong> {{Customer_First_Name}} {{Customer_Second_Name}}</p>
+        <p><strong>Address:</strong> {{Address}}</p>
+        <p><strong>Phone:</strong> {{Phone}}</p>
+    </div>
+    <div class="invoice-body">
+        <table>
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{Invoice_Items}}
+            </tbody>
+        </table>
+    </div>
+    <div class="total">
+        <p><strong>Total Price:</strong> {{Total_Amount}}</p>
+    </div>
+</body>
+</html>
