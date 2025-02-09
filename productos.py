@@ -8,7 +8,7 @@
 import sqlite3
 import tkinter as tk
 from tkinter import messagebox
-from sql import crear_producto, ver_productos
+from sql import crear_producto, ver_productos, actualizar_nombre_producto
 from datetime import datetime
 
 def main_productos(func_regresar):
@@ -45,6 +45,10 @@ def main_productos(func_regresar):
     btn_agregar_producto = tk.Button(ventana_productos, text="Agregar Producto", command=registrar_producto, bg="yellow", fg="black")
     btn_agregar_producto.pack(pady=5, fill="x")
     
+    # Botón para actualizar el nombre de un producto
+    btn_actualizar_nombre = tk.Button(ventana_productos, text="Actualizar Nombre", command=actualizar_nombre_producto_ui, bg="yellow", fg="black")
+    btn_actualizar_nombre.pack(pady=5, fill="x")
+
     # Ejecutar la ventana de productos
     ventana_productos.mainloop()
 
@@ -170,3 +174,41 @@ def registrar_producto():
     # Botón para registrar el producto
     btn_registrar = tk.Button(ventana_toplevel, text="Registrar Producto", command=registrar)
     btn_registrar.pack(pady=20)
+    
+def actualizar_nombre_producto_ui():
+    """
+    Muestra una ventana para actualizar el nombre de un producto usando su ID.
+    ### Comportamiento:
+    1. Solicita el ID del producto y el nuevo nombre.
+    2. Valida la entrada y actualiza el nombre en la base de datos.
+    3. Muestra un mensaje de éxito o error según el resultado.
+    """
+    ventana_toplevel = tk.Toplevel()
+    ventana_toplevel.title("Actualizar Nombre de Producto")
+    ventana_toplevel.geometry("300x200")
+
+    tk.Label(ventana_toplevel, text="ID del Producto:").pack(pady=5)
+    entry_id_producto = tk.Entry(ventana_toplevel)
+    entry_id_producto.pack(pady=5)
+
+    tk.Label(ventana_toplevel, text="Nuevo Nombre del Producto:").pack(pady=5)
+    entry_nuevo_nombre = tk.Entry(ventana_toplevel)
+    entry_nuevo_nombre.pack(pady=5)
+
+    def actualizar():
+        id_producto = entry_id_producto.get().strip()
+        nuevo_nombre = entry_nuevo_nombre.get().strip()
+
+        if not id_producto.isdigit() or not nuevo_nombre:
+            messagebox.showerror("Error", "Debe ingresar un ID válido y un nuevo nombre")
+            return
+
+        if actualizar_nombre_producto(int(id_producto), nuevo_nombre):
+            messagebox.showinfo("Éxito", "Nombre actualizado correctamente")
+        else:
+            messagebox.showerror("Error", "No se encontró el producto o no se pudo actualizar")
+
+        ventana_toplevel.destroy()
+
+    btn_actualizar = tk.Button(ventana_toplevel, text="Actualizar", command=actualizar)
+    btn_actualizar.pack(pady=10)

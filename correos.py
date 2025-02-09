@@ -5,7 +5,6 @@ from email.mime.base import MIMEBase
 from email import encoders
 from datetime import datetime
 
-
 # Path de la plantilla para correos
 path_plantilla_correo = "src/templates/mailtemplate.html"
 
@@ -16,14 +15,21 @@ with open(path_plantilla_correo, encoding='utf-8') as archivo_plantilla_correo:
 
 def generar_correo_html(pedido: dict) -> str:
     """
-    Funcion que toma los datos de un pedido en un diccionario
-    y retorna un string con el html correspondiente al correo del pedido
-    """
+    Genera el contenido HTML de un correo de confirmación de pedido.
 
-    # Copia la plantilla para correos
+    ### Parámetros:
+    - `pedido` (dict): Diccionario con los detalles del pedido, incluyendo:
+      - `productos`: Lista de productos comprados.
+      - `cliente`: Datos del cliente (nombre, apellido, dirección, teléfono, etc.).
+      - `precio_total`: Total a pagar.
+      - `no_factura`: Número de factura.
+
+    ### Retorna:
+    - `str`: HTML del correo con los datos insertados.
+    """
     correo_generado: str = plantilla_correo
 
-    # Toma los datos del pedido
+    # Extraer datos del pedido
     productos: dict = pedido["productos"]
     atributos_cliente: dict = pedido["cliente"]
     nombre_cliente = atributos_cliente["nombre"]
@@ -33,18 +39,16 @@ def generar_correo_html(pedido: dict) -> str:
     precio_total = str(pedido["precio_total"])
     no_factura = pedido["no_factura"]
 
-    # Genera la tabla de productos
+    # Generar la tabla de productos
     tabla_productos: str = ""
-    for id, atributos in productos.items():
+    for _, atributos in productos.items():
         nombre_producto = atributos["nombre"]
         cantidad = atributos["cantidad"]
         precio = atributos["precio"]
         total = atributos["total"]
+        tabla_productos += f"<tr><td>{nombre_producto}</td><td>{cantidad}</td><td>{precio}</td><td>{total}</td></tr>"
 
-        tabla_productos += f"<tr><td>{nombre_producto}</td><td>{cantidad}</td>"
-        tabla_productos += f"<td>{precio}</td><td>{total}</td></tr>"
-
-    # Inserta la informacion en la plantilla
+    # Insertar datos en la plantilla
     correo_generado = correo_generado.replace("{{Customer_First_Name}}", nombre_cliente)
     correo_generado = correo_generado.replace("{{Customer_Last_Name}}", apellido_cliente)
     correo_generado = correo_generado.replace("{{Address}}", direccion_cliente)
@@ -58,41 +62,45 @@ def generar_correo_html(pedido: dict) -> str:
     return correo_generado
 
 
-def enviar_correo(pedido):
+def enviar_correo(pedido: dict):
     """
-    Funcion que toma los datos de un pedido y envia el correo correspondiente al cliente
+    Envía un correo de confirmación del pedido al cliente.
 
+    ### Parámetros:
+    - `pedido` (dict): Datos del pedido.
+
+    ### Comportamiento:
+    1. Genera el contenido del correo a partir del pedido.
+    2. Configura el servidor SMTP de Gmail.
+    3. Intenta enviar el correo y maneja errores en caso de falla.
     """
-
-    # Se obtienen los datos del cliente
     atributos_cliente: dict = pedido["cliente"]
-    no_pedido =  pedido["no_factura"] 
-
+    no_pedido = pedido["no_factura"] 
     correo_cliente = [atributos_cliente["correo"]]
 
-    # Crea un objeto MIMEMultipart (Mensaje con contenido html)
+    # Crear mensaje
     msg = MIMEMultipart()
-    msg['From'] = "lacerveceriaartesanalsa@gmail.com" # Cambiar 
+    msg['From'] = "lacerveceriaartesanalsa@gmail.com"  # Cambiar según necesidad
     msg['To'] = ', '.join(correo_cliente)
     msg['Subject'] = f"Recibo de su pedido No {no_pedido} - Cerveceria Artesanal"
 
-    # Genera el html correspondiente al pedido y lo inserta al mensaje
+    # Adjuntar contenido HTML
     html_content = generar_correo_html(pedido)
     msg.attach(MIMEText(html_content, "html")) 
 
-    # Informacion del emisor
+    # Configurar servidor SMTP
     smtp_server = "smtp.gmail.com"
     smtp_port = 465
     correo_emisor = "lacerveceriaartesanalsa@gmail.com"
-    password = "ppxn mzfg iako hzbl"
+    password = "contraseña_aquí"  # No almacenar contraseñas en código fuente
 
-    # Se conecta al servidor SMTP y envia el mensaje
     try:
         with smtplib.SMTP_SSL(smtp_server, smtp_port) as smtp:
             smtp.login(correo_emisor, password)
             smtp.sendmail(correo_emisor, correo_cliente, msg.as_string())
     except Exception as e:
         print(f"Error al enviar el correo: {e}")
+
 
 
 

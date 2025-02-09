@@ -165,6 +165,29 @@ def crear_producto(nombre, medida, fechaVencimiento, precioProduccion, precioVen
     except Exception as e:
         print(e)
         return False
+    
+def actualizar_nombre_producto(id_producto, nuevo_nombre):
+    """
+    Actualiza el nombre de un producto en la base de datos basado en su ID.
+
+    Parámetros:
+    - id_producto (int): ID del producto.
+    - nuevo_nombre (str): Nuevo nombre del producto.
+
+    Retorna:
+    - True si la actualización fue exitosa, False en caso contrario.
+    """
+    try:
+        con, cursor = abrir_conexion()
+        cursor.execute("UPDATE productos SET NombreProducto = ? WHERE noIdProducto = ?", (nuevo_nombre, id_producto))
+        con.commit()
+        exito = cursor.rowcount > 0  # Retorna True si se actualizó algún registro
+        con.close()
+        return exito
+    except Exception as e:
+        print(f"Error al actualizar el nombre del producto: {e}")
+        return False
+
 
 def listar_clientes():
     """

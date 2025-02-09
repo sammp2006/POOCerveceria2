@@ -16,15 +16,21 @@ with open(path_plantilla_factura, encoding='utf-8') as archivo_factura:
 
 def generar_factura_html(pedido: dict) -> str:
     """
-    Funcion que recibe un diccionario con los datos de un pedido como argumento
-    y retorna un string con el contenido html de la factura correspondiente
+    Genera el contenido HTML de una factura de compra.
 
+    ### Parámetros:
+    - `pedido` (dict): Diccionario con los detalles del pedido:
+      - `productos`: Lista de productos comprados.
+      - `cliente`: Datos del cliente (nombre, dirección, teléfono, etc.).
+      - `precio_total`: Total a pagar.
+      - `no_factura`: Número de factura.
+
+    ### Retorna:
+    - `str`: HTML de la factura con los datos insertados.
     """
-
-    # Copia la plantilla para facturas
     factura_generada: str = plantilla_factura
 
-    # Toma los datos del pedido
+    # Extraer datos del pedido
     productos: dict = pedido["productos"]
     atributos_cliente: dict = pedido["cliente"]
     nombre_cliente = atributos_cliente["nombre"]
@@ -33,18 +39,16 @@ def generar_factura_html(pedido: dict) -> str:
     telefono_cliente = str(atributos_cliente["telefono"])
     precio_total = str(pedido["precio_total"])
 
-    # Genera la tabla de productos
+    # Generar la tabla de productos
     tabla_productos: str = ""
-    for id, atributos in productos.items():
+    for _, atributos in productos.items():
         nombre_producto = atributos["nombre"]
         cantidad = atributos["cantidad"]
         precio = atributos["precio"]
         total = atributos["total"]
+        tabla_productos += f"<tr><td>{nombre_producto}</td><td>{cantidad}</td><td>{precio}</td><td>{total}</td></tr>"
 
-        tabla_productos += f"<tr><td>{nombre_producto}</td><td>{cantidad}</td>"
-        tabla_productos += f"<td>{precio}</td><td>{total}</td></tr>"
-
-    # Inserta los datos del pedido en la plantilla
+    # Insertar datos en la plantilla
     factura_generada = factura_generada.replace("{{Customer_First_Name}}", nombre_cliente)
     factura_generada = factura_generada.replace("{{Customer_Second_Name}}", apellido_cliente)
     factura_generada = factura_generada.replace("{{Address}}", direccion_cliente)
@@ -52,45 +56,37 @@ def generar_factura_html(pedido: dict) -> str:
     factura_generada = factura_generada.replace("{{Total_Amount}}", precio_total)
     factura_generada = factura_generada.replace("{{Invoice_Items}}", tabla_productos)
     
-    # Retorna la factura generada
     return factura_generada
 
 
 def generar_factura_pdf(pedido: dict) -> str:
     """
-    Funcion que toma como argumento los datos de un pedido en un diccionario
-    genera un archivo pdf del recibo y retorna un string que contiene el path hacia el archivo generado
+    Genera un archivo PDF con la factura de un pedido.
+
+    ### Parámetros:
+    - `pedido` (dict): Diccionario con los detalles del pedido.
+
+    ### Retorna:
+    - `str`: Ruta del archivo PDF generado.
     """
-
     no_factura: int = pedido["no_factura"] 
-
-    # Genera el string con el html correspondiente a la factura
     html_factura: str = generar_factura_html(pedido)
-    
-    # Genera el archivo pdf correspondiente a la factura
     path_pdf: str = f"{path_facturas}/{no_factura}.pdf"
     pdfkit.from_string(html_factura, path_pdf)    
-    
-    # Retorna el path al archivo generado
     return path_pdf
 
 
 def abrir_factura_pdf(pdf_path: str):
     """
-    Funcion que toma como argumento el path de un pdf
-    y abre en el navegador el pdf
+    Abre un archivo PDF de factura en el navegador predeterminado.
 
+    ### Parámetros:
+    - `pdf_path` (str): Ruta del archivo PDF a abrir.
     """
-
-    # Se asegura que la ubicacion exista
     if not os.path.isfile(pdf_path):
-        print(f"No se encontro el archivo: {pdf_path}")
+        print(f"No se encontró el archivo: {pdf_path}")
         return
     
-    # Nombre del directorio que contiene al pdf
-    dir_path = os.path.dirname(pdf_path)
-    
-    # Abre el PDF con Firefox
     if platform.system() == "Windows":
         subprocess.run(["C:\\Program Files\\Mozilla Firefox\\firefox.exe", pdf_path])
     elif platform.system() == "Darwin":  # macOS
@@ -99,6 +95,7 @@ def abrir_factura_pdf(pdf_path: str):
         subprocess.run(["firefox", pdf_path])
     else:
         print(f"Sistema operativo no soportado: {platform.system()}")
+
 
 
 """
