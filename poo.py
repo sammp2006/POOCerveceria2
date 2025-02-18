@@ -11,233 +11,263 @@ import platform
 import subprocess
 
 class Db:
-  def __init__(self):
-    """
-    Abre una conexión a la base de datos e inicia el objeto de conexión y cursor.
+    def __init__(self):
+        """
+        Abre una conexión a la base de datos e inicia el objeto de conexión y cursor.
 
-    ### Parámetros:
-    - No recibe parámetros.
+        ### Parámetros:
+        - No recibe parámetros.
 
-    ### Comportamiento:
-    1. Conecta a la base de datos `data.db`.
-    2. Inicia el atributo de conexión y cursor.
-    """
-    self.conexion = sqlite3.connect("data.db")
-    self.cursor = self.conexion.cursor()
+        ### Comportamiento:
+        1. Conecta a la base de datos `data.db`.
+        2. Inicia el atributo de conexión y cursor.
+        """
+        self.conexion = sqlite3.connect("data.db")
+        self.cursor = self.conexion.cursor()
 
-  def cerrar(self):
-    """
-    Cerrar la conexion de la base de datos
-    """
-    self.conexion.close()
+    def cerrar(self):
+        """
+        Cerrar la conexion de la base de datos
+        """
+        self.conexion.close()
 
-  def verificar_conexion(self):
-    """
-    Reabrir la conexion por si no esta disponible la variables conexion y cursor
-    """
-    if not self.conexion.is_open:
-      self.conexion = sqlite3.connect("data.db")
-      self.cursor = self.conexion.cursor()
 
-  def ejecutar_sql(self, sql):
-    """
-    Ejecutar cadena sql
-    """
-    self.verificar_conexion()
-    self.cursor.execute(sql)
-    self.conexion.commit()
+    def verificar_conexion(self):
+        """
+        Reabrir la conexión por si no está disponible la variable de conexión o cursor.
+        """
+        try:
+            # Realizamos una consulta simple para verificar la conexión
+            self.cursor.execute("SELECT 1")
+        except (sqlite3.ProgrammingError, sqlite3.DatabaseError) as e:
+            # Si ocurre un error, se reabre la conexión
+            print("Conexión cerrada o no disponible. Reabriendo...")
+            self.conexion = sqlite3.connect("data.db")
+            self.cursor = self.conexion.cursor()
 
-  def iniciar_tablas(self):
-    """
-    ## Función: `crear_base_de_datos`
-    Crea las tablas necesarias en la base de datos si no existen.
 
-    ### Parámetros:
-    - `conexion`: Objeto de conexión a la base de datos.
-    - `cursor`: Objeto cursor para ejecutar consultas SQL.
+    def ejecutar_sql(self, sql):
+        """
+        Ejecutar cadena sql
+        """
+        self.verificar_conexion()
+        self.cursor.execute(sql)
+        self.conexion.commit()
 
-    ### Comportamiento:
-    1. Crea la tabla **Productos** con las siguientes columnas:
-       - `noIdProducto` (clave primaria, autoincremental).
-       - `NombreProducto` (texto, no nulo).
-       - `medida` (texto, no nulo).
-       - `Fechavencimiento` (fecha, no nulo).
-       - `PrecioProduccion` (entero, no nulo).
-       - `PrecioVenta` (entero, no nulo).
+    @staticmethod
+    def iniciar_tablas(self):
+        """
+        ## Función: `crear_base_de_datos`
+        Crea las tablas necesarias en la base de datos si no existen.
 
-    2. Crea la tabla **Clientes** con las siguientes columnas:
-       - `noIdCliente` (clave primaria, autoincremental).
-       - `nombre` (texto, no nulo).
-       - `apellido` (texto, no nulo).
-       - `direccion` (texto, no nulo).
-       - `telefono` (entero, no nulo).
-       - `correo` (texto, no nulo).
+        ### Parámetros:
+        - `conexion`: Objeto de conexión a la base de datos.
+        - `cursor`: Objeto cursor para ejecutar consultas SQL.
 
-    3. Crea la tabla **Ventas** con las siguientes columnas:
-       - `noIdVentas` (clave primaria, autoincremental).
-       - `fecha` (fecha y hora).
-       - `producto` (entero, clave foránea que referencia a `Productos`).
-       - `cliente` (entero, clave foránea que referencia a `Clientes`).
-       - `cantidad` (entero).
+        ### Comportamiento:
+        1. Crea la tabla **Productos** con las siguientes columnas:
+        - `noIdProducto` (clave primaria, autoincremental).
+        - `NombreProducto` (texto, no nulo).
+        - `medida` (texto, no nulo).
+        - `Fechavencimiento` (fecha, no nulo).
+        - `PrecioProduccion` (entero, no nulo).
+        - `PrecioVenta` (entero, no nulo).
 
-    4. Guarda los cambios y cierra la conexión.
-    """
-    self.cursor.execute('''
-        CREATE TABLE IF NOT EXISTS productos (
-                noIdProducto INTEGER PRIMARY KEY AUTOINCREMENT,
-				NombreProducto text NOT NULL,
-				medida text NOT NULL,
-				Fechavencimiento date NOT NULL,
-				PrecioProduccion integer NOT NULL,
-				PrecioVenta integer NOT NULL
-		)''')
+        2. Crea la tabla **Clientes** con las siguientes columnas:
+        - `noIdCliente` (clave primaria, autoincremental).
+        - `nombre` (texto, no nulo).
+        - `apellido` (texto, no nulo).
+        - `direccion` (texto, no nulo).
+        - `telefono` (entero, no nulo).
+        - `correo` (texto, no nulo).
 
-    self.cursor.execute('''
-        CREATE TABLE IF NOT EXISTS Clientes (
-            noIdCliente INTEGER PRIMARY KEY AUTOINCREMENT,
-            nombre text NOT NULL,
-            apellido text NOT NULL,
-            direccion text NOT NULL,
-            telefono integer NOT NULL,
-            correo text NOT NULL
-        )
-    ''')
+        3. Crea la tabla **Ventas** con las siguientes columnas:
+        - `noIdVentas` (clave primaria, autoincremental).
+        - `fecha` (fecha y hora).
+        - `producto` (entero, clave foránea que referencia a `Productos`).
+        - `cliente` (entero, clave foránea que referencia a `Clientes`).
+        - `cantidad` (entero).
 
-    self.cursor.execute('''
-        CREATE TABLE IF NOT EXISTS Ventas (
-            noIdVentas INTEGER PRIMARY KEY AUTOINCREMENT,
-            fecha DATETIME,
-            producto INTEGER,
-            cliente INTEGER,
-            cantidad INTEGER,
-            FOREIGN KEY (producto) REFERENCES Productos(noIdProducto),
-            FOREIGN KEY (cliente) REFERENCES Clientes(noIdCliente)
-        )
-    ''')
-    self.conexion.commit()
+        4. Guarda los cambios y cierra la conexión.
+        """
+        self.cursor.execute('''
+            CREATE TABLE IF NOT EXISTS productos (
+                    noIdProducto INTEGER PRIMARY KEY AUTOINCREMENT,
+                    NombreProducto text NOT NULL,
+                    medida text NOT NULL,
+                    Fechavencimiento date NOT NULL,
+                    PrecioProduccion integer NOT NULL,
+                    PrecioVenta integer NOT NULL
+            )''')
 
-    self.cerrar()
-    return
+        self.cursor.execute('''
+            CREATE TABLE IF NOT EXISTS Clientes (
+                noIdCliente INTEGER PRIMARY KEY AUTOINCREMENT,
+                nombre text NOT NULL,
+                apellido text NOT NULL,
+                direccion text NOT NULL,
+                telefono integer NOT NULL,
+                correo text NOT NULL
+            )
+        ''')
+
+        self.cursor.execute('''
+            CREATE TABLE IF NOT EXISTS Ventas (
+                noIdVentas INTEGER PRIMARY KEY AUTOINCREMENT,
+                fecha DATETIME,
+                producto INTEGER,
+                cliente INTEGER,
+                cantidad INTEGER,
+                FOREIGN KEY (producto) REFERENCES Productos(noIdProducto),
+                FOREIGN KEY (cliente) REFERENCES Clientes(noIdCliente)
+            )
+        ''')
+        self.conexion.commit()
+
+        self.cerrar()
+        return
 
 
 class Producto:
-  def __init__(self):
-    self.db = Db()
+    def __init__(self, id):
+        self.db = Db()
+        self.id = id
+        tupla = Producto.obtener_producto_detalle(id)
+        self.nombre = tupla[0]
+        self.volumen = tupla[1]
+        self.precio_produccion = tupla[2]
+        self.precio_venta = tupla[3]
+        self.fecha_vencimiento = tupla[4]
 
-  @staticmethod
-  def actualizar_nombre_producto(id_producto, nuevo_nombre):
-    """
-    Actualiza el nombre de un producto en la base de datos basado en su ID.
-
-    Parámetros:
-    - id_producto (int): ID del producto.
-    - nuevo_nombre (str): Nuevo nombre del producto.
-
-    Retorna:
-    - True si la actualización fue exitosa, False en caso contrario.
-    """
-    try:
-      db = Db()
-      db.verificar_conexion()
-      db.cursor.execute("UPDATE productos SET NombreProducto = ? WHERE noIdProducto = ?", (nuevo_nombre, id_producto))
-      db.conexion.commit()
-      exito = db.cursor.rowcount > 0  # Retorna True si se actualizó algún registro
-      db.cerrar()
-      return exito
-    except Exception as e:
-      print(f"Error al actualizar el nombre del producto: {e}")
-      return False
-
-  @staticmethod
-  def ver_productos():
-    """
-    ## Función: `ver_productos`
-    Devuelve una lista de todos los productos registrados en la base de datos.
-
-    ### Parámetros:
-    - No recibe parámetros.
-
-    ### Comportamiento:
-    1. Abre una conexión a la base de datos.
-    2. Ejecuta una consulta para obtener todos los productos.
-    3. Devuelve una lista de diccionarios, donde cada diccionario contiene los detalles de un producto.
-    4. Cierra la conexión.
-    """
-    try:
+    @staticmethod
+    def obtener_producto_detalle(id_producto):
         db = Db()
-        db.cursor.execute("SELECT * FROM Productos")
-        productos = db.cursor.fetchall()
-
-        productos_lista = []
-        for producto in productos:
-            producto_dict = {
-                "id": producto[0],
-                "nombre": producto[1],
-                "medida": producto[2],
-                "fecha_vencimiento": producto[3],
-                "precio_produccion": producto[4],
-                "precio_venta": producto[5]
-            }
-            productos_lista.append(producto_dict)
-
+        db.cursor.execute("SELECT * FROM Productos WHERE noIdProducto = ?", (id_producto,))
+        producto = db.cursor.fetchone()
         db.cerrar()
+        return producto
 
-        return productos_lista
-    except:
-        return None
+    @staticmethod
+    def actualizar_nombre_producto(id_producto, nuevo_nombre):
+        """
+        Actualiza el nombre de un producto en la base de datos basado en su ID.
+
+        Parámetros:
+        - id_producto (int): ID del producto.
+        - nuevo_nombre (str): Nuevo nombre del producto.
+
+        Retorna:
+        - True si la actualización fue exitosa, False en caso contrario.
+        """
+        try:
+            db = Db()
+            db.verificar_conexion()
+            db.cursor.execute("UPDATE productos SET NombreProducto = ? WHERE noIdProducto = ?", (nuevo_nombre, id_producto))
+            db.conexion.commit()
+            exito = db.cursor.rowcount > 0  # Retorna True si se actualizó algún registro
+            db.cerrar()
+            return exito
+        except Exception as e:
+            print(f"Error al actualizar el nombre del producto: {e}")
+            return False
+
+    @staticmethod
+    def ver_productos():
+        """
+        ## Función: `ver_productos`
+        Devuelve una lista de todos los productos registrados en la base de datos.
+
+        ### Parámetros:
+        - No recibe parámetros.
+
+        ### Comportamiento:
+        1. Abre una conexión a la base de datos.
+        2. Ejecuta una consulta para obtener todos los productos.
+        3. Devuelve una lista de diccionarios, donde cada diccionario contiene los detalles de un producto.
+        4. Cierra la conexión.
+        """
+        try:
+            db = Db()
+            db.cursor.execute("SELECT * FROM Productos")
+            productos = db.cursor.fetchall()
+
+            productos_lista = []
+            for producto in productos:
+                producto_dict = {
+                    "id": producto[0],
+                    "nombre": producto[1],
+                    "medida": producto[2],
+                    "fecha_vencimiento": producto[3],
+                    "precio_produccion": producto[4],
+                    "precio_venta": producto[5]
+                }
+                productos_lista.append(producto_dict)
+
+            db.cerrar()
+
+            return productos_lista
+        except:
+            return None
 
 
-  @staticmethod
-  def buscar_producto(id):
-      """
-      Retornar objeto producto
-      """
-      db = Db()
-      db.cursor.execute("SELECT * FROM productos WHERE id = ?", (id,))
-      tupla = db.cursor.fetchone()
-      
-      if tupla:  # Si el producto existe en la base de datos
-          return Producto(*tupla)
-      return None  # Si no se encontró el producto
+    @staticmethod
+    def buscar_producto(id):
+        """
+        Retornar objeto producto
+        """
+        db = Db()
+        db.cursor.execute("SELECT * FROM productos WHERE id = ?", (id,))
+        tupla = db.cursor.fetchone()
+        
+        if tupla:  # Si el producto existe en la base de datos
+            return Producto(*tupla)
+        return None  # Si no se encontró el producto
 
-  @staticmethod
-  def crear_producto(nombre, medida, fecha_vencimiento, precio_produccion, precio_venta):
-    """
-    ## Función: `crear_producto`
-    Inserta un nuevo producto en la base de datos.
+    @staticmethod
+    def crear_producto(nombre, medida, fecha_vencimiento, precio_produccion, precio_venta):
+        """
+        ## Función: `crear_producto`
+        Inserta un nuevo producto en la base de datos.
 
-    ### Parámetros:
-    - `nombre` (str): Nombre del producto.
-    - `medida` (str): Medida del producto (ejemplo: litros, mililitros).
-    - `fechaVencimiento` (str): Fecha de vencimiento del producto.
-    - `precioProduccion` (int): Precio de producción del producto.
-    - `precioVenta` (int): Precio de venta del producto.
+        ### Parámetros:
+        - `nombre` (str): Nombre del producto.
+        - `medida` (str): Medida del producto (ejemplo: litros, mililitros).
+        - `fechaVencimiento` (str): Fecha de vencimiento del producto.
+        - `precioProduccion` (int): Precio de producción del producto.
+        - `precioVenta` (int): Precio de venta del producto.
 
-    ### Comportamiento:
-    1. Abre una conexión a la base de datos.
-    2. Inserta el producto en la tabla **Productos**.
-    3. Guarda los cambios y cierra la conexión.
-    4. Devuelve `True` si la operación fue exitosa, de lo contrario, devuelve `False`.
-    """
-    db = Db()
-    try:
-      db.cursor.execute('''
-            INSERT INTO productos (NombreProducto, medida, Fechavencimiento, PrecioProduccion, PrecioVenta)
-            VALUES(?, ?, ?, ?, ?)
-        ''', (nombre, medida, fecha_vencimiento, precio_produccion, precio_venta))
+        ### Comportamiento:
+        1. Abre una conexión a la base de datos.
+        2. Inserta el producto en la tabla **Productos**.
+        3. Guarda los cambios y cierra la conexión.
+        4. Devuelve `True` si la operación fue exitosa, de lo contrario, devuelve `False`.
+        """
+        db = Db()
+        try:
+            db.cursor.execute('''
+                    INSERT INTO productos (NombreProducto, medida, Fechavencimiento, PrecioProduccion, PrecioVenta)
+                    VALUES(?, ?, ?, ?, ?)
+                ''', (nombre, medida, fecha_vencimiento, precio_produccion, precio_venta))
 
-      db.conexion.commit()
-      db.cerrar()
-      return True
-    except Exception as e:
-      print(e)
-      return False
+            db.conexion.commit()
+            db.cerrar()
+            return True
+        except Exception as e:
+            print(e)
+            return False
 
 
 class Cliente:
-    def __init__(self):
+    def __init__(self, id):
         self.db = Db()
-
+        self.id = id
+        tupla = Cliente.accion_cliente_detalle(id)
+        self.nombre = tupla[1]
+        self.apellido = tupla[2]
+        self.direccion = tupla[3]
+        self.telefono = tupla[4]
+        self.correo = tupla[5]
+    
     @staticmethod
     def listar_clientes():
         """
@@ -447,6 +477,10 @@ class Cliente:
 class Venta:
     def __init__(self):
         self.db = Db()
+
+    @staticmethod
+    def obtener_objeto_venta(id_venta):
+        pass
 
     @staticmethod
     def accion_borrar_venta(id_venta):

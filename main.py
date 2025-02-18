@@ -6,9 +6,8 @@
 import tkinter as tk
 from tkinter import PhotoImage
 from PIL import Image, ImageTk
-from productos import main_productos
-from clientes import main_clientes
-
+from productos import VentanaMainProductos
+from clientes import VentanaMainClientes
 
 """
 Para iniciar el programa
@@ -101,9 +100,12 @@ def iniciar_programa():
         """
         ventana.destroy()
         if seccion == "Productos":
-            main_productos(iniciar_programa)
+            ventana_productos = VentanaMainProductos(iniciar_programa)
+            ventana_productos.mainloop()
         elif seccion == "Clientes":
-            main_clientes(iniciar_programa)
+            ventana_clientes = VentanaMainClientes(iniciar_programa)
+            ventana_clientes.mainloop()
+            # main_clientes(iniciar_programa)
         print(f"Abrir {seccion}")
 
     # Botones para acceder a los módulos

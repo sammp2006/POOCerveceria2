@@ -7,43 +7,53 @@ from datetime import datetime
 from tkinter import messagebox
 from poo import Cliente, Factura, Correo
 
-def main_clientes(func_regresar):
-    """
-    Función principal del módulo de clientes. Crea la ventana principal de clientes.
 
-    Parámetros:
-    - func_regresar (función): Función para regresar al menú principal.
-    """
-    ventana_clientes = tk.Tk()
-    ventana_clientes.title("Clientes")
-    ventana_clientes.geometry("300x250")
-    ventana_clientes.config(bg="white")  # Fondo blanco
 
-    def regresar():
+class VentanaMainClientes(tk.Tk):
+    def __init__(self, func_regresar):
+        super().__init__()
+        self.func_regresar = func_regresar
+        self.title("Clientes")
+        self.geometry("300x250")
+        self.config(bg="white")  # Fondo blanco
+        
+        # Configuración de los botones
+        self._configurar_botones()
+        
+        # Mensaje informativo para el usuario
+        self._mensaje_informativo()
+
+    def regresar(self):
         """
         Función para regresar a la ventana anterior.
         """
-        ventana_clientes.destroy()
-        func_regresar()
+        self.destroy()
+        self.func_regresar()
 
-    # Botón para regresar al menú principal
-    btn_regresar = tk.Button(ventana_clientes, text="Regresar", command=regresar, bg="yellow", fg="black")
-    btn_regresar.pack(pady=20, fill="x")
 
-    # Botón para ver la lista de clientes
-    lista_de_clientes = tk.Button(ventana_clientes, text="Ver Lista de Clientes", command=mostrar_clientes, bg="yellow", fg="black")
-    lista_de_clientes.pack(pady=5, fill="x")
+    def _configurar_botones(self):
+        """
+        Configura los botones para las acciones en la ventana de clientes.
+        """
+        # Botón para regresar al menú principal
+        btn_regresar = tk.Button(self, text="Regresar", command=self.regresar, bg="yellow", fg="black")
+        btn_regresar.pack(pady=20, fill="x")
 
-    # Botón para crear un nuevo cliente
-    btn_crear_cliente = tk.Button(ventana_clientes, text="Crear Cliente Nuevo", command=registrar_cliente, bg="yellow", fg="black")
-    btn_crear_cliente.pack(pady=5, fill="x")
+        # Botón para ver la lista de clientes
+        lista_de_clientes = tk.Button(self, text="Ver Lista de Clientes", command=mostrar_clientes, bg="yellow", fg="black")
+        lista_de_clientes.pack(pady=5, fill="x")
 
-    # Mensaje informativo para el usuario
-    frame_informativo = tk.Label(ventana_clientes, text="Para cambiar la dirección o ver \n el detalle del cliente abre la lista primero", bg="white", fg="black")
-    frame_informativo.pack(pady=20, fill="x")
+        # Botón para crear un nuevo cliente
+        btn_crear_cliente = tk.Button(self, text="Crear Cliente Nuevo", command=registrar_cliente, bg="yellow", fg="black")
+        btn_crear_cliente.pack(pady=5, fill="x")
 
-    # Ejecutar la ventana de clientes
-    ventana_clientes.mainloop()
+    def _mensaje_informativo(self):
+        """
+        Muestra el mensaje informativo para el usuario.
+        """
+        frame_informativo = tk.Label(self, text="Para cambiar la dirección o ver \n el detalle del cliente abre la lista primero", bg="white", fg="black")
+        frame_informativo.pack(pady=20, fill="x")
+
 
 def boton_ver_detalle(id_cliente):
     """

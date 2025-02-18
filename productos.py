@@ -10,46 +10,43 @@ from tkinter import messagebox
 from poo import Producto
 from datetime import datetime
 
-def main_productos(func_regresar):
-    """
-    Inicia la interfaz gráfica del módulo de productos.
+class VentanaMainProductos(tk.Tk):
+    def __init__(self, func_regresar):
+        super().__init__()  # Llamar al inicializador de la clase base Tk
+        self.func_regresar = func_regresar
+        self.title("Productos")
+        self.geometry("300x250")
+        self.config(bg="white")  # Fondo blanco
+        
+        # Configuración de los botones
+        self._configurar_botones()
+        
+    def _configurar_botones(self):
+        """
+        Configura los botones para las acciones en la ventana de productos.
+        """
+        # Botón para regresar al menú principal
+        btn_regresar = tk.Button(self, text="Regresar", command=self.regresar, bg="yellow", fg="black")
+        btn_regresar.pack(pady=20, fill="x")
 
-    Parámetros:
-    - func_regresar (función): Función que se ejecuta al regresar al menú principal.
-
-    Comportamiento:
-    1. Crea una ventana con fondo blanco y título "Productos".
-    2. Muestra un botón **Regresar** para volver al menú principal.
-    3. Muestra un botón **Ver Productos** para listar los productos registrados.
-    4. Muestra un botón **Agregar Producto** para registrar un nuevo producto.
-    """
-    ventana_productos = tk.Tk()
-    ventana_productos.title("Productos")
-    ventana_productos.geometry("300x250")
-    ventana_productos.config(bg="white")  # Fondo blanco
+        # Botón para ver la lista de productos
+        btn_ver_productos = tk.Button(self, text="Ver Productos", command=mostrar_productos, bg="yellow", fg="black")
+        btn_ver_productos.pack(pady=5, fill="x")
+        
+        # Botón para agregar un nuevo producto
+        btn_agregar_producto = tk.Button(self, text="Agregar Producto", command=registrar_producto, bg="yellow", fg="black")
+        btn_agregar_producto.pack(pady=5, fill="x")
+        
+        # Botón para actualizar el nombre de un producto
+        btn_actualizar_nombre = tk.Button(self, text="Actualizar Nombre", command=actualizar_nombre_producto_ui, bg="yellow", fg="black")
+        btn_actualizar_nombre.pack(pady=5, fill="x")
     
-    # Función para regresar al menú principal
-    def regresar():
-        ventana_productos.destroy() 
-        func_regresar() 
-
-    btn_regresar = tk.Button(ventana_productos, text="Regresar", command=regresar, bg="yellow", fg="black")
-    btn_regresar.pack(pady=20, fill="x")
-
-    # Botón para ver la lista de productos
-    btn_ver_productos = tk.Button(ventana_productos, text="Ver Productos", command=mostrar_productos, bg="yellow", fg="black")
-    btn_ver_productos.pack(pady=5, fill="x")
-    
-    # Botón para agregar un nuevo producto
-    btn_agregar_producto = tk.Button(ventana_productos, text="Agregar Producto", command=registrar_producto, bg="yellow", fg="black")
-    btn_agregar_producto.pack(pady=5, fill="x")
-    
-    # Botón para actualizar el nombre de un producto
-    btn_actualizar_nombre = tk.Button(ventana_productos, text="Actualizar Nombre", command=actualizar_nombre_producto_ui, bg="yellow", fg="black")
-    btn_actualizar_nombre.pack(pady=5, fill="x")
-
-    # Ejecutar la ventana de productos
-    ventana_productos.mainloop()
+    def regresar(self):
+        """
+        Función para regresar a la ventana anterior.
+        """
+        self.destroy()
+        self.func_regresar()
 
 def mostrar_productos():
     """
