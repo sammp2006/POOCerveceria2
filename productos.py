@@ -5,10 +5,9 @@
 # - **Registrar nuevos productos** con detalles como nombre, medida, fecha de vencimiento, precio de producción y precio de venta.
 # Utiliza `tkinter` para la interfaz gráfica y se conecta con la base de datos a través del módulo `sql.py`.
 
-import sqlite3
 import tkinter as tk
 from tkinter import messagebox
-from sql import crear_producto, ver_productos, actualizar_nombre_producto
+from poo import Producto
 from datetime import datetime
 
 def main_productos(func_regresar):
@@ -86,7 +85,7 @@ def mostrar_productos():
     canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
     
     # Obtener la lista de productos desde la base de datos
-    productos = ver_productos()  # Asumiendo que esta función te devuelve una lista de productos
+    productos = Producto.ver_productos()  # Asumiendo que esta función te devuelve una lista de productos
     
     if productos:
         for producto in productos:
@@ -164,7 +163,7 @@ def registrar_producto():
         precio_venta = float(entry_precio_venta.get())
         str_fecha = entry_fecha_vencimiento.get()
         fecha_vencimiento = datetime.strptime(str_fecha, "%d/%m/%Y").date()
-        resultado = crear_producto(nombre, medida, fecha_vencimiento, precio_produccion, precio_venta)
+        resultado = Producto.crear_producto(nombre, medida, fecha_vencimiento, precio_produccion, precio_venta)
         if resultado:
             messagebox.showinfo("", "Se ha creado correctamente el producto")
         else:
@@ -203,7 +202,7 @@ def actualizar_nombre_producto_ui():
             messagebox.showerror("Error", "Debe ingresar un ID válido y un nuevo nombre")
             return
 
-        if actualizar_nombre_producto(int(id_producto), nuevo_nombre):
+        if Producto.actualizar_nombre_producto(int(id_producto), nuevo_nombre):
             messagebox.showinfo("Éxito", "Nombre actualizado correctamente")
         else:
             messagebox.showerror("Error", "No se encontró el producto o no se pudo actualizar")

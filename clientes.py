@@ -5,9 +5,7 @@
 import tkinter as tk
 from datetime import datetime
 from tkinter import messagebox
-from sql import obtener_data_factura, crear_cliente, listar_clientes, accion_cliente_detalle, accion_cliente_cambiar_direccion, accion_ver_historico_ventas_cliente, accion_registrar_venta_cliente, accion_borrar_venta
-from impresion_factura import generar_factura_html, generar_factura_pdf
-from correos import generar_correo_html, enviar_correo
+from poo import Cliente, Factura, Correo
 
 def main_clientes(func_regresar):
     """
@@ -54,7 +52,7 @@ def boton_ver_detalle(id_cliente):
     Parámetros:
     - id_cliente (int): ID del cliente cuyos detalles se desean ver.
     """
-    cliente = accion_cliente_detalle(id_cliente)
+    cliente = Cliente.accion_cliente_detalle(id_cliente)
 
     if not cliente:
         messagebox.showerror("Error", "Cliente no encontrado.")
@@ -103,7 +101,7 @@ def boton_cambiar_direccion(id_cliente):
             messagebox.showerror("Error", "La dirección no puede estar vacía.")
             return
 
-        accion_cliente_cambiar_direccion(nueva_direccion, id_cliente)
+        Cliente.accion_cliente_cambiar_direccion(nueva_direccion, id_cliente)
         messagebox.showinfo("Éxito", "Dirección actualizada correctamente.")
         ventana_cambiar_direccion.destroy()
 
@@ -162,7 +160,7 @@ def boton_registrar_venta(id_cliente):
         fecha_venta = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         # Insertar en la base de datos
-        if accion_registrar_venta_cliente(fecha_venta, producto_id, id_cliente, cantidad):
+        if Cliente.accion_registrar_venta_cliente(fecha_venta, producto_id, id_cliente, cantidad):
             messagebox.showinfo("", "Venta Registrada correctamente")
         else:
             messagebox.showerror("", "Error registrando venta")    
@@ -198,7 +196,7 @@ def boton_ver_historico_ventas(id_cliente):
     scroll_y.pack(side=tk.RIGHT, fill="y")
     canvas.create_window((0, 0), window=frame, anchor="nw")
     
-    ventas = accion_ver_historico_ventas_cliente(id_cliente)
+    ventas = Cliente.accion_ver_historico_ventas_cliente(id_cliente)
 
     if not ventas:
         messagebox.showinfo("Sin Ventas", "Este cliente no tiene ventas registradas.")
@@ -237,11 +235,11 @@ def boton_facturar(id_cliente):
     Parámetros:
     - id_cliente (int): ID del cliente cuyas ventas se desean facturar.
     """
-    dicc = obtener_data_factura(id_cliente)
+    dicc = Cliente.obtener_data_factura(id_cliente)
     correo = dicc["cliente"]["correo"]
     try:
         print(dicc)
-        path = generar_factura_pdf(dicc)
+        path = Factura.generar_factura_pdf(dicc)
         messagebox.showinfo("Exito", f"Factura guardada en {path}")
         print()
     except Exception as e:
@@ -249,7 +247,7 @@ def boton_facturar(id_cliente):
         messagebox.showerror("Error", f"Sucedio la siguiente excepcion {e}")
 
     try:
-        enviar_correo(pedido=dicc)
+        Correo.enviar_correo(pedido=dicc)
         messagebox.showinfo("Exito", f"Exito enviando a {correo}")
     except Exception as e:
         print(e)
@@ -267,7 +265,7 @@ def boton_borrar_venta(id_venta):
         return  
 
     try:
-        ret = accion_borrar_venta(id_venta)
+        ret = Cliente.accion_borrar_venta(id_venta)
 
         if ret:
             messagebox.showinfo("Éxito", f"Venta con ID: {id_venta} eliminada correctamente.")
@@ -289,7 +287,7 @@ def mostrar_clientes():
     tk.Label(ventana_toplevel, text="Lista de Clientes Registrados", font=("Arial", 14)).pack(pady=10)
 
     # Obtener la lista de clientes
-    clientes = listar_clientes()
+    clientes = Cliente.listar_clientes()
 
     if not clientes:
         messagebox.showinfo("Sin Clientes", "No hay clientes registrados.")
@@ -397,7 +395,7 @@ def registrar_cliente():
             messagebox.showerror("Error", "El teléfono debe ser un número.")
             return
 
-        crear_cliente(nombre, apellido, direccion, telefono, correo)
+        Cliente.crear_cliente(nombre, apellido, direccion, telefono, correo)
 
         # Mensaje de éxito
         messagebox.showinfo("Éxito", "Cliente registrado correctamente.")
