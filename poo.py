@@ -6,6 +6,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
 import pdfkit
+import uuid
 import os
 import platform
 import subprocess
