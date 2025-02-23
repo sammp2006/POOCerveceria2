@@ -32,6 +32,9 @@ def es_entero_no_negativo(cadena: str) -> bool:
     Verifica si un string representa un número entero no negativo.
     Retorna True si es un número entero no negativo, False en caso contrario.
     """
+    if isinstance(cadena, int):
+        return True
+
     return bool(re.fullmatch(r"\d+", cadena))
 
 def es_correo(cadena: str) -> bool:

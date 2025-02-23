@@ -159,8 +159,12 @@ def registrar_producto():
         precio_produccion = float(entry_precio_produccion.get())
         precio_venta = float(entry_precio_venta.get())
         str_fecha = entry_fecha_vencimiento.get()
-        fecha_vencimiento = datetime.strptime(str_fecha, "%d/%m/%Y").date()
-
+        try:
+            fecha_vencimiento = datetime.strptime(str_fecha, "%d/%m/%Y").date()
+        except Exception as e:
+            messagebox.showerror("Error", "No se pudo insertar la fecha de vencimiento, revisa el formato (d/m/año)")
+            ventana_toplevel.destroy()
+            return 
         producto_info = {
             'nombre': nombre,
             'medida': medida,
@@ -169,7 +173,7 @@ def registrar_producto():
             'precio_venta': precio_venta
         }
 
-        resultado = Producto.crear_producto(**producto_info)
+        resultado = Producto.crear_objeto(**producto_info)
         if resultado:
             messagebox.showinfo("", "Se ha creado correctamente el producto")
         else:

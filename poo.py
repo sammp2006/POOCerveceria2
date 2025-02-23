@@ -255,7 +255,7 @@ class Producto(Objeto):
         return None  # Si no se encontró el producto
 
     @staticmethod
-    def crear_producto(*args, **kwargs):
+    def crear_objeto(*args, **kwargs):
         """
         ## Función: `crear_producto`
         Inserta un nuevo producto en la base de datos.

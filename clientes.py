@@ -5,7 +5,7 @@
 import tkinter as tk
 from datetime import datetime
 from tkinter import messagebox
-from poo import Cliente, Factura, Correo
+from poo import Cliente, Factura, Correo, Venta
 from verificacion import fecha_valida, es_alfa_numerico, formato_peso_volumen, es_entero_no_negativo, es_correo
 
 
@@ -111,7 +111,7 @@ def boton_cambiar_direccion(id_cliente):
             messagebox.showerror("Error", "La dirección no puede estar vacía.")
             return
 
-        Cliente.accion_cliente_cambiar_direccion(nueva_direccion, id_cliente)
+        Cliente.accion_cliente_cambiar_direccion(id_cliente, nueva_direccion)
         messagebox.showinfo("Éxito", "Dirección actualizada correctamente.")
         ventana_cambiar_direccion.destroy()
 
@@ -275,7 +275,7 @@ def boton_borrar_venta(id_venta):
         return  
 
     try:
-        ret = Cliente.accion_borrar_venta(id_venta)
+        ret = Venta.accion_borrar_venta(id_venta)
 
         if ret:
             messagebox.showinfo("Éxito", f"Venta con ID: {id_venta} eliminada correctamente.")
@@ -389,44 +389,58 @@ def registrar_cliente():
         """
         Función para registrar el cliente en la base de datos.
         """
+        print("Registrando cliente")
+
+        # Obtener datos de los campos de entrada
         nombre = entry_nombre.get()
         apellido = entry_apellido.get()
         direccion = entry_direccion.get()
         telefono = entry_telefono.get()
         correo = entry_correo.get()
 
-        if not nombre or not apellido or not direccion or not telefono or not correo:
-            messagebox.showerror("Error", "Por favor complete todos los campos.")
-            return
+        # Imprimir la información para verificar que se están obteniendo correctamente
+        print("Info:", nombre, apellido, direccion, telefono, correo)
 
-        try:
-            telefono = int(telefono)  # Verificamos que el teléfono sea un número
-        except ValueError:
-            messagebox.showerror("Error", "El teléfono debe ser un número.")
-            return
-        
+        # Validaciones
         if not es_alfa_numerico(nombre):
-            messagebox.showerror("Error", "El teléfono debe ser un número.")
+            messagebox.showerror("Error", "El nombre debe ser alfanumérico.")
+            print("Nombre inválido")
             return
-        
-        if not es_alfa_numerico(apellido):
-            messagebox.showerror("Error", "El apellido debe ser un número.")
-            return
-        
-        if not es_entero_no_negativo(telefono):
-            telefono = int(telefono)  # Verificamos que el teléfono sea un número
-            messagebox.showerror("Error", "El teléfono debe ser un numero valido (enviar sin espacios y solo el numero)")
-            return
-        
-        if not es_correo(correo):
-            messagebox.showerror("Error", "El teléfono debe ser un numero valido (enviar sin espacios y solo el numero)")
-            return
-        
-        Cliente.crear_objeto(nombre, apellido, direccion, telefono, correo)
 
-        # Mensaje de éxito
-        messagebox.showinfo("Éxito", "Cliente registrado correctamente.")
+        if not es_alfa_numerico(apellido):
+            messagebox.showerror("Error", "El apellido debe ser alfanumérico.")
+            print("Apellido inválido")
+            return
+
+        if not es_entero_no_negativo(telefono):
+            messagebox.showerror("Error", "El teléfono debe ser un número válido (sin espacios y solo el número).")
+            print("Teléfono inválido")
+            return
+
+        if not es_correo(correo):
+            messagebox.showerror("Error", "El correo debe ser válido.")
+            print("Correo inválido")
+            return
+        
+        cliente_info = {
+            "nombre": nombre,
+            "apellido": apellido,
+            "direccion": direccion,
+            "telefono": telefono,
+            "correo": correo,
+        }
+
+        # Intentar registrar el cliente
+        if Cliente.crear_objeto(**cliente_info):
+            messagebox.showinfo("Éxito", "Cliente registrado correctamente.")
+            print("Cliente registrado con éxito")
+        else:
+            messagebox.showerror("Error", "Error al insertar el cliente. Revisa la terminal.")
+            print("Error al insertar el cliente en la base de datos.")
+        
+        # Cerrar la ventana de registro
         ventana_toplevel.destroy()
+
 
     # Botón para registrar al cliente
     btn_registrar = tk.Button(ventana_toplevel, text="Registrar Cliente", command=registrar)
