@@ -84,7 +84,6 @@ def enviar_correo(pedido: dict):
     msg['To'] = ', '.join(correo_cliente)
     msg['Subject'] = f"Recibo de su pedido No {no_pedido} - Cerveceria Artesanal"
 
-    # Adjuntar contenido HTML
     html_content = generar_correo_html(pedido)
     msg.attach(MIMEText(html_content, "html")) 
 

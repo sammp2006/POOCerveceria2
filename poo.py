@@ -129,12 +129,35 @@ class Db:
         return
 
 class Objeto:
+    """
+    Clase generica para implementar los metodos de crear y listar, es clase
+    padre de Venta, Producto y Cliente. Cada clase es polimorfa y adapta las funciones segun
+    su consulta sql.
+
+    La base de datos Db() tambien es un atributo de la clase Padre
+    """
+
     def __init__(self):
         self.db = Db()
-    
+        
     @staticmethod
-    def crear_objeto(self):
+    def crear_objeto(*args, **kwargs):
+        """
+        Funcion generica para crear una instancia del objeto y registrarla en la base de datos
+        se llama en Productos y Clientes y se sobreescribe (polimofismo)
+        """
+        
         pass
+
+
+    @staticmethod
+    def listar_objetos(*args, **kwargs):
+        """
+        Funcion generica para listar los registros de un objeto y registrar en la base de datos
+        se llama en Productos y Clientes y se sobreescribe (polimofismo)
+        """
+        pass
+
 
     
 class Producto(Objeto):
@@ -181,9 +204,9 @@ class Producto(Objeto):
             return False
 
     @staticmethod
-    def ver_productos():
+    def listar_objetos(*args, **kwargs):
         """
-        ## Función: `ver_productos`
+        ## Función: `listar_objetos` (Polimorfismo de clases)
         Devuelve una lista de todos los productos registrados en la base de datos.
 
         ### Parámetros:
@@ -218,7 +241,6 @@ class Producto(Objeto):
         except:
             return None
 
-
     @staticmethod
     def buscar_producto(id):
         """
@@ -233,7 +255,7 @@ class Producto(Objeto):
         return None  # Si no se encontró el producto
 
     @staticmethod
-    def crear_producto(nombre, medida, fecha_vencimiento, precio_produccion, precio_venta):
+    def crear_producto(*args, **kwargs):
         """
         ## Función: `crear_producto`
         Inserta un nuevo producto en la base de datos.
@@ -241,9 +263,9 @@ class Producto(Objeto):
         ### Parámetros:
         - `nombre` (str): Nombre del producto.
         - `medida` (str): Medida del producto (ejemplo: litros, mililitros).
-        - `fechaVencimiento` (str): Fecha de vencimiento del producto.
-        - `precioProduccion` (int): Precio de producción del producto.
-        - `precioVenta` (int): Precio de venta del producto.
+        - `fecha_vencimiento` (str): Fecha de vencimiento del producto.
+        - `precio_produccion` (int): Precio de producción del producto.
+        - `precio_venta` (int): Precio de venta del producto.
 
         ### Comportamiento:
         1. Abre una conexión a la base de datos.
@@ -251,6 +273,17 @@ class Producto(Objeto):
         3. Guarda los cambios y cierra la conexión.
         4. Devuelve `True` si la operación fue exitosa, de lo contrario, devuelve `False`.
         """
+        # Obtener parámetros desde kwargs (recomendado por nombre)
+        nombre = kwargs.get('nombre')
+        medida = kwargs.get('medida')
+        fecha_vencimiento = kwargs.get('fecha_vencimiento')
+        precio_produccion = kwargs.get('precio_produccion')
+        precio_venta = kwargs.get('precio_venta')
+
+        # Si alguno de los parámetros no se pasa, devolver False.
+        if not nombre or not medida or not fecha_vencimiento or not precio_produccion or not precio_venta:
+            return False
+
         db = Db()
         try:
             db.cursor.execute('''
@@ -264,7 +297,6 @@ class Producto(Objeto):
         except Exception as e:
             print(e)
             return False
-
 
 class Cliente(Objeto):
     def __init__(self, id):
@@ -448,8 +480,6 @@ class Cliente(Objeto):
 
         return dicc
 
-  
-
     @staticmethod
     def accion_registrar_venta_cliente(fecha_venta, producto_id, id_cliente, cantidad):
         """
@@ -483,10 +513,10 @@ class Cliente(Objeto):
             return False
 
 
-class Venta:
+class Venta(Objeto):
     def __init__(self):
-        self.db = Db()
-
+        super().__init__()
+      
     @staticmethod
     def obtener_objeto_venta(id_venta):
         pass

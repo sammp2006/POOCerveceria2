@@ -82,7 +82,7 @@ def mostrar_productos():
     canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
     
     # Obtener la lista de productos desde la base de datos
-    productos = Producto.ver_productos()  # Asumiendo que esta función te devuelve una lista de productos
+    productos = Producto.listar_objetos()  # Asumiendo que esta función te devuelve una lista de productos
     
     if productos:
         for producto in productos:
@@ -160,7 +160,16 @@ def registrar_producto():
         precio_venta = float(entry_precio_venta.get())
         str_fecha = entry_fecha_vencimiento.get()
         fecha_vencimiento = datetime.strptime(str_fecha, "%d/%m/%Y").date()
-        resultado = Producto.crear_producto(nombre, medida, fecha_vencimiento, precio_produccion, precio_venta)
+
+        producto_info = {
+            'nombre': nombre,
+            'medida': medida,
+            'fecha_vencimiento': fecha_vencimiento,
+            'precio_produccion': precio_produccion,
+            'precio_venta': precio_venta
+        }
+
+        resultado = Producto.crear_producto(**producto_info)
         if resultado:
             messagebox.showinfo("", "Se ha creado correctamente el producto")
         else:
