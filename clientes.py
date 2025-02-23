@@ -297,7 +297,7 @@ def mostrar_clientes():
     tk.Label(ventana_toplevel, text="Lista de Clientes Registrados", font=("Arial", 14)).pack(pady=10)
 
     # Obtener la lista de clientes
-    clientes = Cliente.listar_clientes()
+    clientes = Cliente.listar_objetos()
 
     if not clientes:
         messagebox.showinfo("Sin Clientes", "No hay clientes registrados.")

@@ -332,24 +332,38 @@ class Cliente(Objeto):
         return lista
     
     @staticmethod
-    def crear_objeto(nombre, apellido, direccion, telefono, correo):
+    def crear_objeto(*args, **kwargs):
         """
-        Metodo para crear cliente nuevo, se hereda de clase Objeto y se sobrescribe a modo
-        de polimorfismo
+        Método para crear cliente nuevo, se hereda de clase Objeto y se sobrescribe a modo
+        de polimorfismo.
 
-        Recibe mediante etiquetas con *args, **kwargs
+        Recibe mediante etiquetas con *args, **kwargs.
         """
         try:
+            # Obtener los valores a partir de kwargs
+            nombre = kwargs.get('nombre')
+            apellido = kwargs.get('apellido')
+            direccion = kwargs.get('direccion')
+            telefono = kwargs.get('telefono')
+            correo = kwargs.get('correo')
+
+            # Verificar que todos los parámetros estén presentes
+            if not nombre or not apellido or not direccion or not telefono or not correo:
+                return False
+
             db = Db()
             db.cursor.execute('''
                 INSERT INTO Clientes (nombre, apellido, direccion, telefono, correo)
                 VALUES (?, ?, ?, ?, ?)
             ''', (nombre, apellido, direccion, telefono, correo))
+
             db.conexion.commit()
             db.conexion.close()
             return True
-        except:
-            return False    
+        except Exception as e:
+            print(e)
+            return False
+
 
     @staticmethod
     def accion_cliente_detalle(id_cliente):
