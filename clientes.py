@@ -422,7 +422,7 @@ def registrar_cliente():
             messagebox.showerror("Error", "El teléfono debe ser un numero valido (enviar sin espacios y solo el numero)")
             return
         
-        Cliente.crear_cliente(nombre, apellido, direccion, telefono, correo)
+        Cliente.crear_objeto(nombre, apellido, direccion, telefono, correo)
 
         # Mensaje de éxito
         messagebox.showinfo("Éxito", "Cliente registrado correctamente.")
