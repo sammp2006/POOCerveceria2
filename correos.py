@@ -92,7 +92,7 @@ def enviar_correo(pedido: dict):
     smtp_server = "smtp.gmail.com"
     smtp_port = 465
     correo_emisor = "lacerveceriaartesanalsa@gmail.com"
-    password = "contraseña_aquí"  # No almacenar contraseñas en código fuente
+    password = "ppxn mzfg iako hzbl" 
 
     try:
         with smtplib.SMTP_SSL(smtp_server, smtp_port) as smtp:

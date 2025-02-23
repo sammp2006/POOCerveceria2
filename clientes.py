@@ -6,7 +6,7 @@ import tkinter as tk
 from datetime import datetime
 from tkinter import messagebox
 from poo import Cliente, Factura, Correo
-
+from verificacion import fecha_valida, es_alfa_numerico, formato_peso_volumen, es_entero_no_negativo, es_correo
 
 
 class VentanaMainClientes(tk.Tk):
@@ -149,7 +149,7 @@ def boton_registrar_venta(id_cliente):
 
     # Mostrar la fecha actual automáticamente
     fecha_actual = datetime.now().strftime("%d/%m/%Y")
-    tk.Label(ventana_toplevel, text=f"Fecha de Venta: {fecha_actual}").pack(pady=5)
+    tk.Label(ventana_toplevel, text=f"Fecha de Venta (%d/%m/%Y): {fecha_actual}").pack(pady=5)
 
     def registrar_venta():
         """
@@ -221,7 +221,7 @@ def boton_ver_historico_ventas(id_cliente):
         venta_frame.pack(fill="x", pady=5)
 
         # Mostrar la venta con fecha y producto
-        label_venta = tk.Label(venta_frame, text=f"Venta ID: {noIdVentas} | Fecha: {fecha} | Producto ID: {producto_id}")
+        label_venta = tk.Label(venta_frame, text=f"Venta ID: {noIdVentas} | Fecha (%d/%m/%Y): {fecha} | Producto ID: {producto_id}")
         label_venta.pack(side=tk.LEFT)
 
         # Crear un frame para los botones de cada venta
@@ -404,7 +404,24 @@ def registrar_cliente():
         except ValueError:
             messagebox.showerror("Error", "El teléfono debe ser un número.")
             return
-
+        
+        if not es_alfa_numerico(nombre):
+            messagebox.showerror("Error", "El teléfono debe ser un número.")
+            return
+        
+        if not es_alfa_numerico(apellido):
+            messagebox.showerror("Error", "El apellido debe ser un número.")
+            return
+        
+        if not es_entero_no_negativo(telefono):
+            telefono = int(telefono)  # Verificamos que el teléfono sea un número
+            messagebox.showerror("Error", "El teléfono debe ser un numero valido (enviar sin espacios y solo el numero)")
+            return
+        
+        if not es_correo(correo):
+            messagebox.showerror("Error", "El teléfono debe ser un numero valido (enviar sin espacios y solo el numero)")
+            return
+        
         Cliente.crear_cliente(nombre, apellido, direccion, telefono, correo)
 
         # Mensaje de éxito

@@ -128,10 +128,18 @@ class Db:
         self.cerrar()
         return
 
-
-class Producto:
-    def __init__(self, id):
+class Objeto:
+    def __init__(self):
         self.db = Db()
+    
+    @staticmethod
+    def crear_objeto(self):
+        pass
+
+    
+class Producto(Objeto):
+    def __init__(self, id):
+        super().__init__()
         self.id = id
         tupla = Producto.obtener_producto_detalle(id)
         self.nombre = tupla[0]
@@ -258,9 +266,9 @@ class Producto:
             return False
 
 
-class Cliente:
+class Cliente(Objeto):
     def __init__(self, id):
-        self.db = Db()
+        super().__init__()
         self.id = id
         tupla = Cliente.accion_cliente_detalle(id)
         self.nombre = tupla[1]
