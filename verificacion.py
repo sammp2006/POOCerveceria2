@@ -22,10 +22,11 @@ def es_alfa_numerico(cadena: str) -> bool:
 
 def formato_peso_volumen(cadena: str) -> bool:
     """
-    Verifica si un string tiene el formato "<numero> ml" o "<numero> g".
+    Verifica si un string tiene el formato "<numero> ml" o "<numero> g" o "<numero>".
     Retorna True si tiene el formato correcto, False en caso contrario.
     """
-    return bool(re.fullmatch(r"\d+ (ml|g)", cadena))
+    cadena = str(cadena)
+    return bool(re.fullmatch(r"\d+ (ml|g)", cadena)) or es_entero_no_negativo(cadena)
 
 def es_entero_no_negativo(cadena: str) -> bool:
     """

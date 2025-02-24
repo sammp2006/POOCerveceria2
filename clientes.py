@@ -1,7 +1,7 @@
 # Módulo: `clientes.py`
 # Descripción: Este módulo gestiona la interfaz gráfica y la lógica relacionada con los clientes.
 # Permite registrar nuevos clientes, ver detalles, actualizar direcciones, registrar ventas y ver el historial de ventas.
-
+import os
 import tkinter as tk
 from datetime import datetime
 from tkinter import messagebox
@@ -250,6 +250,9 @@ def boton_facturar(id_cliente):
     try:
         print(dicc)
         path = Factura.generar_factura_pdf(dicc)
+        path = os.path.join(os.getcwd(), path) # Incluye el path completo
+        messagebox.showinfo("Exito", f"Factura guardada en {path}")
+        Factura.abrir_factura_pdf(path) # Abre la factura generada
         messagebox.showinfo("Exito", f"Factura guardada en {path}")
         print()
     except Exception as e:

@@ -749,21 +749,36 @@ class Factura:
     @staticmethod
     def abrir_factura_pdf(pdf_path: str):
         """
-        Abre un archivo PDF de factura en el navegador predeterminado.
+        Abre un archivo PDF de factura en el navegador, si no intenta abrirla en el explorador de archivos.
 
         ### Parámetros:
-        - `pdf_path` (str): Ruta del archivo PDF a abrir.
+        - pdf_path (str): Ruta del archivo PDF a abrir.
         """
         if not os.path.isfile(pdf_path):
             print(f"No se encontró el archivo: {pdf_path}")
             return
         
-        if platform.system() == "Windows":
-            subprocess.run(["C:\\Program Files\\Mozilla Firefox\\firefox.exe", pdf_path])
-        elif platform.system() == "Darwin":  # macOS
-            subprocess.run(["open", "-a", "Firefox", pdf_path])
-        elif platform.system() == "Linux":
-            subprocess.run(["firefox", pdf_path])
+        sistema = platform.system()
+        
+        if sistema == "Windows":
+            navegadores = [
+                "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+                "C:\\Program Files\\Mozilla Firefox\\firefox.exe"
+            ]
+            for navegador in navegadores:
+                if os.path.isfile(navegador):
+                    subprocess.run([navegador, pdf_path], check=False)
+                    return
+            # Si no se encuentra Chrome ni Firefox, abrir con el explorador de archivos
+            subprocess.run(["explorer", pdf_path], check=False)
+            
+        elif sistema == "Darwin":  # macOS
+            subprocess.run(["open", "-a", "Safari", pdf_path], check=True)
+        
+        elif sistema == "Linux":
+            subprocess.run(["firefox", pdf_path], check=False)
+        
         else:
-            print(f"Sistema operativo no soportado: {platform.system()}")
+            print(f"Sistema operativo no soportado: {sistema}")
+
 

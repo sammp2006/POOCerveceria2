@@ -9,6 +9,7 @@ import tkinter as tk
 from tkinter import messagebox
 from poo import Producto
 from datetime import datetime
+from verificacion import formato_peso_volumen
 
 class VentanaMainProductos(tk.Tk):
     def __init__(self, func_regresar):
@@ -133,11 +134,11 @@ def registrar_producto():
     entry_nombre = tk.Entry(ventana_toplevel)
     entry_nombre.pack(pady=5)
 
-    tk.Label(ventana_toplevel, text="Medida:").pack(pady=5)
+    tk.Label(ventana_toplevel, text="Medida en Volumen ml o <Peso> g").pack(pady=5)
     entry_kilolitro = tk.Entry(ventana_toplevel)
     entry_kilolitro.pack(pady=5)
 
-    tk.Label(ventana_toplevel, text="Fecha Vencimiento (d/m/a):").pack(pady=5)
+    tk.Label(ventana_toplevel, text="Fecha Vencimiento (DD/MM/AAAA):").pack(pady=5)
     entry_fecha_vencimiento = tk.Entry(ventana_toplevel)
     entry_fecha_vencimiento.pack(pady=5)
 
@@ -156,13 +157,18 @@ def registrar_producto():
     def registrar():
         nombre = entry_nombre.get()
         medida = entry_kilolitro.get()
+
+        if not formato_peso_volumen(medida):
+            messagebox.showerror("Error", "No se pudo insertar la medida, escribir en el siguiente formato: 100 ml o 500 o 300 g, por ejemplo")
+            return
+
         precio_produccion = float(entry_precio_produccion.get())
         precio_venta = float(entry_precio_venta.get())
         str_fecha = entry_fecha_vencimiento.get()
         try:
             fecha_vencimiento = datetime.strptime(str_fecha, "%d/%m/%Y").date()
         except Exception as e:
-            messagebox.showerror("Error", "No se pudo insertar la fecha de vencimiento, revisa el formato (d/m/año)")
+            messagebox.showerror("Error", "No se pudo insertar la fecha de vencimiento, revisa el formato (dia/mes/año)")
             ventana_toplevel.destroy()
             return 
         producto_info = {
