@@ -9,7 +9,7 @@ import tkinter as tk
 from tkinter import messagebox
 from poo import Producto
 from datetime import datetime
-from verificacion import formato_peso_volumen
+from verificacion import formato_peso_volumen 
 
 class VentanaMainProductos(tk.Tk):
     def __init__(self, func_regresar):
@@ -134,7 +134,7 @@ def registrar_producto():
     entry_nombre = tk.Entry(ventana_toplevel)
     entry_nombre.pack(pady=5)
 
-    tk.Label(ventana_toplevel, text="Medida en Volumen ml o <Peso> g").pack(pady=5)
+    tk.Label(ventana_toplevel, text="Medida en <Volumen> ml o <Peso> g").pack(pady=5)
     entry_kilolitro = tk.Entry(ventana_toplevel)
     entry_kilolitro.pack(pady=5)
 

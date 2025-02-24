@@ -145,8 +145,7 @@ class Objeto:
         """
         Funcion generica para crear una instancia del objeto y registrarla en la base de datos
         se llama en Productos y Clientes y se sobreescribe (polimofismo)
-        """
-        
+        """  
         pass
 
 
