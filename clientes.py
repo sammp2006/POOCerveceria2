@@ -170,8 +170,8 @@ def boton_registrar_venta(id_cliente):
         fecha_venta = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         if Cliente.verificar_venta_existente(id_cliente, producto_id):
-            messagebox.showwarning("Advertencia", "ADVERTENCIA, PRODUCTO REPETIDO \n Se permite REINSERTAR pero se \nrecomienda borrar uno de los dos registros")    
-
+            messagebox.showwarning("Advertencia", " Este producto ya existe, \n para cambiar la cantidad de este producto, \n borre el producto anterior y registrelo con la nueva cantidad.\n NO SE REGISTRO EL PRODUCTO")    
+            return
 
         # Insertar en la base de datos
         if Cliente.accion_registrar_venta_cliente(fecha_venta, producto_id, id_cliente, cantidad):
