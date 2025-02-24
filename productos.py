@@ -134,13 +134,21 @@ def registrar_producto():
     entry_nombre = tk.Entry(ventana_toplevel)
     entry_nombre.pack(pady=5)
 
-    tk.Label(ventana_toplevel, text="Medida en <Volumen> ml o <Peso> g").pack(pady=5)
+    tk.Label(ventana_toplevel, text="Formato Medida: \n<Volumen> ml o <Peso> g\n Ejemplo 500 ml").pack(pady=10)
+
+
+    tk.Label(ventana_toplevel, text="Medida:").pack(pady=5)
     entry_kilolitro = tk.Entry(ventana_toplevel)
     entry_kilolitro.pack(pady=5)
+
+    tk.Label(ventana_toplevel, text="Formato Fecha: Dia/Mes/Año \n Sepaparar fechas por / \n importante escribir 4 digitos en el año \n Ejemplo: 1/1/2026 o 05/05/2025").pack(pady=10)
 
     tk.Label(ventana_toplevel, text="Fecha Vencimiento (DD/MM/AAAA):").pack(pady=5)
     entry_fecha_vencimiento = tk.Entry(ventana_toplevel)
     entry_fecha_vencimiento.pack(pady=5)
+
+    tk.Label(ventana_toplevel, text="** Escribir precio sin signos ni comas").pack(pady=10)
+
 
     tk.Label(ventana_toplevel, text="Precio de Producción:").pack(pady=5)
     entry_precio_produccion = tk.Entry(ventana_toplevel)

@@ -431,6 +431,25 @@ class Cliente(Objeto):
         return ventas_cliente
 
     @staticmethod
+    def reiniciar_carrito(id_cliente):
+        """
+        Borrar todas las ventas del cliente
+        """
+        db = Db()
+
+        try:
+            db.cursor.execute('''
+                DELETE FROM Ventas
+                WHERE cliente = ?
+            ''', (id_cliente,))
+
+            db.conexion.commit()  # Confirmar los cambios
+
+            return True
+        except Exception as e:
+            return False
+
+    @staticmethod
     def obtener_data_factura(id_cliente):
         """
         ## Función: `obtener_data_factura`
@@ -664,7 +683,7 @@ class Correo:
         smtp_server = "smtp.gmail.com"
         smtp_port = 465
         correo_emisor = "lacerveceriaartesanalsa@gmail.com"
-        password = "ppxn mzfg iako hzbl"  # No almacenar contraseñas en código fuente
+        password = "ppxn mzfg iako hzbl"  
 
         try:
             with smtplib.SMTP_SSL(smtp_server, smtp_port) as smtp:

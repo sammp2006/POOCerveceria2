@@ -16,6 +16,31 @@ Dependencias:
 
 Antes de poder usar la interfaz se necesita instalar Python y Tkinter
 
+##########################################################################################
+
+Instalar Python y Tkinter para Windows:
+
+Descarga e instala la última versión de Python desde python.org.
+Durante el proceso de instalación, asegúrate de seleccionar la opción "Install Tcl/Tk".
+
+Con la herramienta pip se instalan las librerías necesarias para el correcto funcionamiento del programa
+
+Link de descarga: https://wkhtmltopdf.org/downloads.html
+
+Asegúrese de tener instalado la última versión de wkhtmltopdf:
+    wkhtmltopdf  - -version
+    Verifique que la ruta de wkhtmltopdf se haya agregado correctamente al sistema:
+    
+    - Abre el Panel de Control y ve a Sistema y Seguridad > Sistema > Configuración avanzada del sistema.
+    - Haz clic en Variables de entorno.
+    - En la sección Variables del sistema, busca la variable Path y selecciónala.
+    - Haz clic en Editar.
+    - Si no ves la ruta de wkhtmltopdf en la lista, haz clic en Nuevo y agrega la ruta donde instalaste wkhtmltopdf. Por ejemplo, si lo instalaste en C:\Program Files\wkhtmltopdf\bin, agrega esa ruta.
+    
+    Haz clic en Aceptar para guardar los cambios.
+
+################################################################333
+
 Instalar Python, Tkinter y SQLITE en Linux: 
 
 Tutorial para distribuciones basadas en Debian o Ubuntu:
@@ -25,11 +50,12 @@ sudo apt install python3
 sudo apt install python3-pip
 sudo apt install python3-tk
 sudo apt install sqlite3
+sudo apt-get install wkhtmltopdf  
 
-Instalar Python y Tkinter para Windows:
+##################################################################################3
 
-Descarga e instala la última versión de Python desde python.org.
-Durante el proceso de instalación, asegúrate de seleccionar la opción "Install Tcl/Tk".
+Instalar dependencias 
+
 
 Instalar librerias dependencias
 
@@ -37,11 +63,12 @@ En el repositorio hay un archivo llamado dependencias.txt, abrir una terminal y 
 
 pip install -r dependencias.txt
 
-Con la herramienta pip se instalan las librerías necesarias para el correcto funcionamiento del programa
-
 Ahora para iniciar el programa:
 
-python3 main.py
+python3 main.pyw ## OJO CON LA EXTENSIÓN
+
+LINK DEL REPOSITORIO:  https://github.com/sammp2006/POOCerveceria2
+
 """
 
 

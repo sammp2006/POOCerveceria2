@@ -294,7 +294,7 @@ def mostrar_clientes():
     """
     ventana_toplevel = tk.Toplevel()
     ventana_toplevel.title("Listado de Clientes")
-    ventana_toplevel.geometry("1000x500")  # Aumentar el tamaño de la ventana
+    ventana_toplevel.geometry("1200x500")  # Aumentar el tamaño de la ventana
 
     # Etiqueta de encabezado
     tk.Label(ventana_toplevel, text="Lista de Clientes Registrados", font=("Arial", 14)).pack(pady=10)
@@ -345,18 +345,35 @@ def mostrar_clientes():
         btn_registrar_venta.pack(side=tk.LEFT, padx=5)
 
         # Botón para ver el histórico de ventas
-        btn_ver_historico = tk.Button(botones_frame, text="Historico Ventas", command=lambda id_cliente=id_cliente: boton_ver_historico_ventas(id_cliente))
+        btn_ver_historico = tk.Button(botones_frame, text="Ver Carrito", command=lambda id_cliente=id_cliente: boton_ver_historico_ventas(id_cliente))
         btn_ver_historico.pack(side=tk.LEFT, padx=5)
 
         # Botón para facturar el carrito
         btn_ver_historico = tk.Button(botones_frame, text="Facturar Carrito", command=lambda id_cliente=id_cliente: boton_facturar(id_cliente))
         btn_ver_historico.pack(side=tk.LEFT, padx=5)
 
+        # Botón para facturar el carrito
+        btn_borrar_carrito = tk.Button(botones_frame, text="Reiniciar Carrito", command=lambda id_cliente=id_cliente: reiniciar_carrito(id_cliente))
+        btn_borrar_carrito.pack(side=tk.LEFT, padx=5)
+
     # Botón para cerrar la ventana emergente
     btn_cerrar = tk.Button(ventana_toplevel, text="Cerrar", command=ventana_toplevel.destroy)
     btn_cerrar.pack(pady=10)
 
     ventana_toplevel.mainloop()
+
+def reiniciar_carrito(id_cliente):
+    """
+    Accion del boton para reiniciar el carrito
+    """
+    
+    res = Cliente.reiniciar_carrito(id_cliente)
+    if res:
+        messagebox.showinfo("Exito", "Se reinicio el carrito del cliente")
+    else:
+        messagebox.showerror("Error", "Puede que no se hayan aplicado los cambios")
+
+
 
 def registrar_cliente():
     """
