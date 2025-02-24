@@ -169,6 +169,10 @@ def boton_registrar_venta(id_cliente):
         cantidad = int(cantidad_str)
         fecha_venta = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+        if Cliente.verificar_venta_existente(id_cliente, producto_id):
+            messagebox.showwarning("Advertencia", "ADVERTENCIA, PRODUCTO REPETIDO \n Se permite REINSERTAR pero se \nrecomienda borrar uno de los dos registros")    
+
+
         # Insertar en la base de datos
         if Cliente.accion_registrar_venta_cliente(fecha_venta, producto_id, id_cliente, cantidad):
             messagebox.showinfo("", "Venta Registrada correctamente")
@@ -190,11 +194,11 @@ def boton_ver_historico_ventas(id_cliente):
     - id_cliente (int): ID del cliente cuyo historial de ventas se desea ver.
     """
     ventana_toplevel = tk.Toplevel()
-    ventana_toplevel.title("Histórico de Ventas")
+    ventana_toplevel.title("Carrito de Ventas")
     ventana_toplevel.geometry("600x400")
 
     # Mostrar el id del cliente en la ventana
-    label_cliente = tk.Label(ventana_toplevel, text=f"Histórico de Ventas para Cliente ID: {id_cliente}")
+    label_cliente = tk.Label(ventana_toplevel, text=f"Carrito del Cliente ID: {id_cliente}")
     label_cliente.pack(pady=10)
 
     # Crear un canvas y un frame para los botones
@@ -209,7 +213,7 @@ def boton_ver_historico_ventas(id_cliente):
     ventas = Cliente.accion_ver_historico_ventas_cliente(id_cliente)
 
     if not ventas:
-        messagebox.showinfo("Sin Ventas", "Este cliente no tiene ventas registradas.")
+        messagebox.showinfo("Sin Ventas", "Este cliente no tiene productos en el carrito.")
         ventana_toplevel.destroy()
         return
 
@@ -221,7 +225,7 @@ def boton_ver_historico_ventas(id_cliente):
         venta_frame.pack(fill="x", pady=5)
 
         # Mostrar la venta con fecha y producto
-        label_venta = tk.Label(venta_frame, text=f"Venta ID: {noIdVentas} | Fecha (%d/%m/%Y): {fecha} | Producto ID: {producto_id}")
+        label_venta = tk.Label(venta_frame, text=f"Venta ID: {noIdVentas} | Fecha: {fecha} | Producto ID: {producto_id}")
         label_venta.pack(side=tk.LEFT)
 
         # Crear un frame para los botones de cada venta
@@ -229,7 +233,7 @@ def boton_ver_historico_ventas(id_cliente):
         botones_frame.pack(side=tk.LEFT, padx=10)
 
         # Botón para borrar la venta
-        btn_borrar_venta = tk.Button(botones_frame, text="Borrar Venta", command=lambda id_venta=noIdVentas: boton_borrar_venta(id_venta))
+        btn_borrar_venta = tk.Button(botones_frame, text="Borrar Producto", command=lambda id_venta=noIdVentas: boton_borrar_venta(id_venta))
         btn_borrar_venta.pack(side=tk.LEFT, padx=5)
 
     # Actualizar el tamaño del canvas
@@ -341,7 +345,7 @@ def mostrar_clientes():
         btn_cambiar_direccion.pack(side=tk.LEFT, padx=5)
 
         # Botón para registrar una venta del cliente
-        btn_registrar_venta = tk.Button(botones_frame, text="Registrar Venta", command=lambda id_cliente=id_cliente: boton_registrar_venta(id_cliente))
+        btn_registrar_venta = tk.Button(botones_frame, text="Agregar Producto Carrito", command=lambda id_cliente=id_cliente: boton_registrar_venta(id_cliente))
         btn_registrar_venta.pack(side=tk.LEFT, padx=5)
 
         # Botón para ver el histórico de ventas

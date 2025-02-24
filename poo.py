@@ -533,6 +533,35 @@ class Cliente(Objeto):
         return dicc
 
     @staticmethod
+    def verificar_venta_existente(cliente_id, producto_id):
+        """
+        Verifica si ya existe una venta registrada para el mismo cliente y producto.
+
+        ### Parámetros:
+        - `cliente_id` (int): ID del cliente.
+        - `producto_id` (int): ID del producto.
+
+        ### Retorno:
+        - `True` si existe una venta registrada con ese cliente y producto, de lo contrario `False`.
+        """
+        try:
+            db = Db()
+            db.cursor.execute('''
+                SELECT COUNT(*) FROM Ventas 
+                WHERE cliente = ? AND producto = ?
+            ''', (cliente_id, producto_id))
+            resultado = db.cursor.fetchone()
+
+            db.cerrar()
+            
+            # Si el conteo es mayor que 0, significa que ya existe una venta con este cliente y producto.
+            return resultado[0] > 0
+        
+        except Exception as e:
+            print(f"Error al verificar la venta existente: {e}")
+            return False
+
+    @staticmethod
     def accion_registrar_venta_cliente(fecha_venta, producto_id, id_cliente, cantidad):
         """
         ## Función: `accion_registrar_venta_cliente`
