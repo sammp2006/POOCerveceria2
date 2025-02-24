@@ -218,14 +218,14 @@ def boton_ver_historico_ventas(id_cliente):
         return
 
     for venta in ventas:
-        noIdVentas, fecha, producto_id = venta[0], venta[1], venta[2]
+        noIdVentas, fecha, producto_id, cantidad = venta[0], venta[1], venta[2], venta[3]
         
         # Crear un frame para cada venta
         venta_frame = tk.Frame(frame)
         venta_frame.pack(fill="x", pady=5)
 
         # Mostrar la venta con fecha y producto
-        label_venta = tk.Label(venta_frame, text=f"Venta ID: {noIdVentas} | Fecha: {fecha} | Producto ID: {producto_id}")
+        label_venta = tk.Label(venta_frame, text=f"Venta ID: {noIdVentas} | Fecha: {fecha} | Producto ID: {producto_id} | Cantidad: {cantidad}")
         label_venta.pack(side=tk.LEFT)
 
         # Crear un frame para los botones de cada venta
@@ -277,7 +277,7 @@ def boton_borrar_venta(id_venta):
     Parámetros:
     - id_venta (int): ID de la venta que se desea borrar.
     """
-    confirmacion = messagebox.askyesno("Confirmar", "¿Estás seguro de que deseas borrar esta venta?")
+    confirmacion = messagebox.askyesno("Confirmar", "¿Estás seguro de que deseas borrar este producto del carrito?")
     if not confirmacion:
         return  
 
