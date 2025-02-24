@@ -168,7 +168,7 @@ def registrar_producto():
         try:
             fecha_vencimiento = datetime.strptime(str_fecha, "%d/%m/%Y").date()
         except Exception as e:
-            messagebox.showerror("Error", "No se pudo insertar la fecha de vencimiento, revisa el formato (dia/mes/año)")
+            messagebox.showerror("Error", "No se pudo insertar la fecha de vencimiento, revise el formato (Dia/Mes/Año) y que la fecha sea valida")
             ventana_toplevel.destroy()
             return 
         producto_info = {

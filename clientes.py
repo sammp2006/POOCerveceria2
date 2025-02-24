@@ -149,7 +149,7 @@ def boton_registrar_venta(id_cliente):
 
     # Mostrar la fecha actual automáticamente
     fecha_actual = datetime.now().strftime("%d/%m/%Y")
-    tk.Label(ventana_toplevel, text=f"Fecha de Venta (%d/%m/%Y): {fecha_actual}").pack(pady=5)
+    tk.Label(ventana_toplevel, text=f"Fecha de Venta (DD/MM/AAAA): {fecha_actual}").pack(pady=5)
 
     def registrar_venta():
         """
@@ -281,7 +281,7 @@ def boton_borrar_venta(id_venta):
         ret = Venta.accion_borrar_venta(id_venta)
 
         if ret:
-            messagebox.showinfo("Éxito", f"Venta con ID: {id_venta} eliminada correctamente.")
+            messagebox.showinfo("Éxito", f"Venta con ID: {id_venta} eliminada correctamente, recargue la pagina para ver los cambios.")
         else:
             messagebox.showwarning("No encontrado", f"No se encontró una venta con ID: {id_venta}.")
 
