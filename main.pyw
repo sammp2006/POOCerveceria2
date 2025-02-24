@@ -163,3 +163,12 @@ def run():
 
 if __name__ == "__main__":
     run()
+
+
+"""
+Nuevos Cambios:
+Correcciones parcial anterior y anotaciones adicionales*** IMPLEMENTACIÓN CARRITO DE COMPRAS*** EXPLICACIÓN DETALLADA DE LOS FORMATOS*** MEJORA DOCUMENTACIÓN TÉCNICA 
+main.py -> main.pyw ## No visualizar la terminal, solo la interfaz gráfica.Implementación POO para Clientes y Productos. 
+Herencia y polimorfismo clase Objeto, tkinter.Tk y Db.Implementación POO para ventanas de Tkinter.Implementación POO para manejo de base de datos.
+Mejora impresión factura y envío de correo.
+"""
